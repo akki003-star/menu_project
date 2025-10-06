@@ -64,6 +64,13 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
+    .visit-msg {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #28a745;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -133,6 +140,8 @@
       </h3>
 
       <button class="btn" onclick="sendOrder()">Send Order to WhatsApp</button>
+
+      <div class="visit-msg">🙏 Thank you for ordering! Visit again 😊</div>
     </div>
   </div>
 
@@ -194,14 +203,15 @@
       chosen.forEach(it => {
         message += `- ${it.item} x${it.qty} = ₹${it.subtotal.toFixed(2)}%0A`;
       });
-      message += `%0A💰 *Total:* ₹${total.toFixed(2)}%0AThank you for ordering with us! 🙏`;
+      message += `%0A💰 *Total:* ₹${total.toFixed(2)}%0A🙏 Thank you for ordering! Visit again 😊`;
 
-      const phoneNumber = "916388063663"; // Change to your number (with country code, e.g. 91)
+      const phoneNumber = "919848046739"; // Change to your number (with country code)
       const url = `https://wa.me/${phoneNumber}?text=${message}`;
       window.open(url, "_blank");
     }
   </script>
 </body>
 </html>
+
 
 
