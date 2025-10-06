@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pota Pechudham Hotel — Menu</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #fafafa;
+      color: #333;
+    }
+    .menu-container {
+      max-width: 700px;
+      margin: auto;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,.08);
+    }
+    h1, h3 { margin: 0.5rem 0; }
+    .section { margin: 1.5rem 0; }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+    .item label { flex: 1; cursor: pointer; }
+    .price { min-width: 72px; text-align: right; }
+    input[type="number"] {
+      width: 50px;
+      text-align: center;
+      margin-left: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      padding: 4px;
+    }
+    .total-box {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-top: 1px solid #ddd;
+    }
+    #selected-items { font-size: 0.95rem; line-height: 1.4rem; }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 1.2rem;
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #28a745;
+      color: #fff;
+      cursor: pointer;
+    }
+    .btn:hover { background-color: #218838; }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-container">
+    <h1 style="text-align:center">POTA PECHUDHAM RA__</h1>
+    <p style="text-align:center;font-size:1.05rem">
+      📞 +91 638-806-3663 | 🌐 www.pota_pechudham_hotel.com
+    </p>
+
+    <div class="section">
+      <label for="customerName"><strong>Customer Name:</strong></label>
+      <input type="text" id="customerName" placeholder="Enter your name" required />
+    </div>
+
+    <!-- Spicy Specialties -->
+    <div class="section">
+      <h3>Spicy Specialties</h3>
+      <div class="item">
+        <label><input type="checkbox" class="menu-item" data-name="Andhra Chicken Kura" data-price="149" /> Andhra Chicken Kura</label>
+        <input type="number" class="qty" min="1" value="1" disabled>
+        <span class="price">₹149.00</span>
+      </div>
+      <div class="item">
+        <label><input type="checkbox" class="menu-item" data-name="Naatu Kodi Kura" data-price="299" /> Naatu Kodi Kura</label>
+        <input type="number" class="qty" min="1" value="1" disabled>
+        <span class="price">₹299.00</span>
+      </div>
+      <div class="item">
+        <label><input type="checkbox" class="menu-item" data-name="Mutton Fry" data-price="299" /> Mutton Fry</label>
+        <input type="number" class="qty" min="1" value="1" disabled>
+        <span class="price">₹299.00</span>
+      </div>
+      <div class="item">
+        <label><input type="checkbox" class="menu-item" data-name="Ulavacharu" data-price="199.5" /> Ulavacharu</label>
+        <input type="number" class="qty" min="1" value="1" disabled>
+        <span class="price">₹199.50</span>
+      </div>
+    </div>
+
+    <!-- Biryani -->
+    <div class="section">
+      <h3>Region &amp; Style — Biryani</h3>
+      <div class="item">
+        <label><input type="checkbox" class="menu-item" data-name="Hyderabadi Biryani" data-price="199" /> Hyderabadi Biryani</label>
+        <input type="number" class="qty" min="1" value="1" disabled>
+        <span class="price">₹199.00</span>
+      </div>
+      <div class="item">
+        <label><input type="checkbox" class="menu-item" data-name="Raju Gari Kodi Biryani" data-price="199" /> Raju Gari Kodi Biryani</label>
+        <input type="number" class="qty" min="1" value="1" disabled>
+        <span class="price">₹199.00</span>
+      </div>
+      <div class="item">
+        <label><input type="checkbox" class="menu-item" data-name="Prawns Biryani" data-price="299" /> Prawns Biryani</label>
+        <input type="number" class="qty" min="1" value="1" disabled>
+        <span class="price">₹299.00</span>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="total-box">
+      <h3>Selected Items:</h3>
+      <div id="selected-items">(none)</div>
+
+      <h3 style="margin-top:1rem">
+        Total Amount: ₹<span id="total-amount">0.00</span>
+      </h3>
+
+      <button class="btn" onclick="sendOrder()">Send Order to WhatsApp</button>
+    </div>
+  </div>
+
+  <script>
+    const menuItems = document.querySelectorAll(".menu-item");
+    const qtyInputs = document.querySelectorAll(".qty");
+
+    // Enable quantity input when item is checked
+    menuItems.forEach((cb, i) => {
+      cb.addEventListener("change", () => {
+        qtyInputs[i].disabled = !cb.checked;
+        updateOrder();
+      });
+    });
+
+    // Update total when quantity changes
+    qtyInputs.forEach(qty => qty.addEventListener("input", updateOrder));
+
+    function updateOrder() {
+      const chosen = [];
+      let total = 0;
+      document.querySelectorAll(".menu-item").forEach((cb, i) => {
+        if (cb.checked) {
+          const name = cb.dataset.name;
+          const price = parseFloat(cb.dataset.price);
+          const qty = parseInt(qtyInputs[i].value) || 1;
+          const subtotal = price * qty;
+          total += subtotal;
+          chosen.push({ name, qty, subtotal });
+        }
+      });
+
+      // Display selected items
+      const listHTML = chosen.length
+        ? chosen.map(it => `${it.name} (x${it.qty}) — ₹${it.subtotal.toFixed(2)}`).join("<br>")
+        : "(none)";
+      document.getElementById("selected-items").innerHTML = listHTML;
+      document.getElementById("total-amount").textContent = total.toFixed(2);
+    }
+
+    function sendOrder() {
+      const name = document.getElementById("customerName").value.trim();
+      if (!name) return alert("Please enter your name before sending the order.");
+
+      const chosen = [];
+      document.querySelectorAll(".menu-item").forEach((cb, i) => {
+        if (cb.checked) {
+          const item = cb.dataset.name;
+          const price = parseFloat(cb.dataset.price);
+          const qty = parseInt(qtyInputs[i].value) || 1;
+          const subtotal = price * qty;
+          chosen.push({ item, qty, subtotal });
+        }
+      });
+      if (chosen.length === 0) return alert("Please select at least one item.");
+
+      let total = chosen.reduce((acc, it) => acc + it.subtotal, 0);
+      let message = `🍽️ *Pota Pechudham Hotel Order*%0A👤 Customer: ${name}%0A%0A🧾 *Items Ordered:*%0A`;
+      chosen.forEach(it => {
+        message += `- ${it.item} x${it.qty} = ₹${it.subtotal.toFixed(2)}%0A`;
+      });
+      message += `%0A💰 *Total:* ₹${total.toFixed(2)}%0AThank you for ordering with us! 🙏`;
+
+      const phoneNumber = "916388063663"; // Change to your number (with country code, e.g. 91)
+      const url = `https://wa.me/${phoneNumber}?text=${message}`;
+      window.open(url, "_blank");
+    }
+  </script>
+</body>
+</html>
+
+
